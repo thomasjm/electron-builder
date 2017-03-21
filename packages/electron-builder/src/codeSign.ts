@@ -100,7 +100,8 @@ export async function createKeychain(tmpDir: TmpDir, cscLink: string, cscKeyPass
       BluebirdPromise.mapSeries([
         ["create-keychain", "-p", keychainPassword, keychainName],
         ["unlock-keychain", "-p", keychainPassword, keychainName],
-        ["set-keychain-settings", "-t", "3600", "-u", keychainName]
+        ["set-keychain-settings", "-t", "3600", "-u", keychainName],
+        ["set-key-partition-list", "-S", "apple-tool:,apple:", "-s", "-k", keychainPassword, keychainName]
       ], it => exec("security", it))
     ])
     .then<CodeSigningInfo>(() => importCerts(keychainName, certPaths, <Array<string>>[cscKeyPassword, cscIKeyPassword].filter(it => it != null))),
